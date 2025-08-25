@@ -14,7 +14,7 @@ export default function Todo() {
   };
 
   const handleOnClick = () => {
-    setTodos([...todos, { title: inputValue, isDone: true }]);
+    setTodos([...todos, { title: inputValue, isDone: false }]);
     setInputValue("");
   };
   // const data = [
@@ -74,7 +74,14 @@ export default function Todo() {
         </div>
         <div className="px-4 ">
           {todos.map((todo, index) => (
-            <Task key={index} taskText={todo.title}></Task>
+            <Task
+              todos={todos}
+              index={index}
+              setTodos={setTodos}
+              key={index}
+              taskText={todo.title}
+              isDone={todo.isDone}
+            ></Task>
           ))}
         </div>
         <div className="flex justify-between px-[20px] mt-5">
