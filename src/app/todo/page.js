@@ -4,8 +4,12 @@ import { useState } from "react";
 
 import { Box, Task } from "@/components";
 
+import { v4 as uuidv4 } from "uuid";
+
 export default function Todo() {
-  const [todos, setTodos] = useState([]);
+  const [todos, setTodos] = useState([]); // mapalj haruulj bga array
+  const [savedTodos, setSaved] = useState([]);
+  const [activeTab, setActive] = useState("All");
 
   const [inputValue, setInputValue] = useState("");
 
@@ -14,20 +18,34 @@ export default function Todo() {
   };
 
   const handleOnClick = () => {
-    setTodos([...todos, { title: inputValue, isDone: false }]);
+    setTodos([...todos, { title: inputValue, isDone: false, id: uuidv4() }]);
+    setSaved([...todos, { title: inputValue, isDone: false, id: uuidv4() }]);
+
     setInputValue("");
   };
-  // const data = [
-  //   {
-  //     dataName: "Create PR 2",
-  //     isCompleted: true,
-  //   },
-  //   {
-  //     dataName: "Create PR ",
-  //     isCompleted: false,
-  //   },
-  // ];
 
+  const deleteComplete = () => {
+    const deleteCompleted = savedTodos.filter((todo) => !todo.isDone);
+    setTodos(deleteCompleted);
+    setSaved(deleteCompleted);
+  };
+
+  const allChange = () => {
+    setTodos(savedTodos);
+    setActive("All");
+  };
+
+  const activeChange = () => {
+    const activeTodos = savedTodos.filter((todo) => !todo.isDone);
+    setTodos(activeTodos);
+    setActive("Active");
+  };
+
+  const completedChange = () => {
+    const completedTodos = savedTodos.filter((todo) => todo.isDone);
+    setTodos(completedTodos);
+    setActive("Completed");
+  };
   return (
     <div className=" flex justify-center items-center flex-col pt-15 bg-white h-screen">
       <div className="h-fit w-[377px] bg-white border-3 border-green-500">
@@ -39,11 +57,12 @@ export default function Todo() {
             value={inputValue}
             onChange={handleOnchange}
             type="text"
-            className="border rounded-[6px] border-black w-[280px] text-[#71717A]"
+            className="border rounded-[6px] border-black w-[280px] text-[#71717A] pl-4"
             placeholder="Add a new task..."
           />
 
           <Box
+            isActive={true}
             onClick={handleOnClick}
             className="border border-[#E4E4E7] text-[#71717A] bg-[#3C82F6]"
             title="Add"
@@ -53,19 +72,24 @@ export default function Todo() {
         </div>
         <div className="flex  gap-[6px] mt-5  w-[32px] ml-4 text-[12px]">
           <Box
+            isActive={activeTab === "All"}
+            onClick={allChange}
             title="All"
             backgroundColor="#3C82F6"
             text="white"
             height="32px"
           />
           <Box
+            isActive={activeTab === "Active"}
+            onClick={activeChange}
             title="Active"
-            backgroundColor="#F3F4F6
-"
+            backgroundColor="#F3F4F6"
             height="32px"
             color="black"
           />
           <Box
+            isActive={activeTab === "Completed"}
+            onClick={completedChange}
             title="Completed"
             backgroundColor="#F3F4F6"
             height="32px"
@@ -78,15 +102,21 @@ export default function Todo() {
               todos={todos}
               index={index}
               setTodos={setTodos}
-              key={index}
+              setSaved={setSaved}
+              key={todo.id}
               taskText={todo.title}
               isDone={todo.isDone}
             ></Task>
           ))}
         </div>
         <div className="flex justify-between px-[20px] mt-5">
-          <div className="text-[#6B7280]">1 of 2 tasks completed</div>
-          <div className="text-[#EF4444]">Clear completed</div>
+          <div className="text-[#6B7280] flex gap-1">
+            {todos.filter((todo) => todo.isDone).length} of {todos.length} tasks
+            completed
+          </div>
+          <button className="text-[#EF4444]" onClick={deleteComplete}>
+            Clear completed
+          </button>
         </div>
         <div className="text-[12px] flex justify-center p-1 mt-10">
           <p className="text-gray-400">Powered by</p>
