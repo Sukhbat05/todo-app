@@ -128,7 +128,7 @@ export default function Todo() {
               </div>
             )}
           </div>
-          <div className="text-[12px] flex justify-center p-1 mb-5 mt-10">
+          <div className="text-[12px] flex justify-center p-1 mb-5 mt-10 gap-1">
             <p className="text-gray-400">Powered by</p>
             <a className="text-blue-500">Pinecone academy</a>
           </div>
