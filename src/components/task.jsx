@@ -1,23 +1,8 @@
-export const Task = ({
-  setTodos,
-  setSaved,
-  index,
-  isDone,
-  taskText,
-  todos,
-}) => {
+export const Task = ({ setTodos, isDone, taskText, todos, id }) => {
   const handleOnChange = (event) => {
     setTodos((prev) =>
-      prev.map((el, i) => {
-        if (i === index) {
-          el.isDone = event.target.checked;
-        }
-        return el;
-      })
-    );
-    setSaved((prev) =>
-      prev.map((el, i) => {
-        if (i === index) {
+      prev.map((el) => {
+        if (el.id === id) {
           el.isDone = event.target.checked;
         }
         return el;
@@ -25,15 +10,14 @@ export const Task = ({
     );
   };
 
-  const deleteOnChange = (index) => {
-    const newTodos = todos.filter((_, i) => i !== index);
+  const deleteOnChange = () => {
+    const newTodos = todos.filter((todo) => todo.id !== id);
 
     setTodos(newTodos);
-    setSaved(newTodos);
   };
   return (
-    <div className="w-[345px] h-[62px] flex items-center my-5 px-4 gap-2.5 bg-gray-100 justify-between">
-      <div className="flex gap-2.5 w-[208px]">
+    <div className="p-4  flex items-center my-5 gap-2.5 bg-gray-100 ">
+      <div className="flex gap-2.5 w-[245px]">
         <input
           onChange={handleOnChange}
           checked={isDone}
@@ -41,17 +25,21 @@ export const Task = ({
         ></input>
 
         {isDone ? (
-          <div className="text-black line-through w-fit">{taskText}</div>
+          <div className="text-black line-through   w-fit overflow-hidden wrap-break-word">
+            {taskText}
+          </div>
         ) : (
-          <div className="text-black w-fit">{taskText}</div>
+          <div className="text-black w-fit overflow-hidden wrap-break-word">
+            {taskText}
+          </div>
         )}
       </div>
 
       <div>
         {isDone && (
           <button
-            onClick={() => deleteOnChange(index)}
-            className="p-3 bg-red-50 text-red-500 rounded-xl  "
+            onClick={() => deleteOnChange(id)}
+            className="p-1 bg-red-50 text-red-500 rounded-xl  "
           >
             Delete
           </button>

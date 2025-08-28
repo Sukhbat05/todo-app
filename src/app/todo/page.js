@@ -8,7 +8,6 @@ import { v4 as uuidv4 } from "uuid";
 
 export default function Todo() {
   const [todos, setTodos] = useState([]); // mapalj haruulj bga array
-  const [savedTodos, setSaved] = useState([]);
   const [activeTab, setActive] = useState("All");
 
   const [inputValue, setInputValue] = useState("");
@@ -19,36 +18,37 @@ export default function Todo() {
 
   const handleOnClick = () => {
     setTodos([...todos, { title: inputValue, isDone: false, id: uuidv4() }]);
-    setSaved([...todos, { title: inputValue, isDone: false, id: uuidv4() }]);
-
     setInputValue("");
   };
 
   const deleteComplete = () => {
-    const deleteCompleted = savedTodos.filter((todo) => !todo.isDone);
+    const deleteCompleted = todos.filter((todo) => !todo.isDone);
     setTodos(deleteCompleted);
-    setSaved(deleteCompleted);
   };
 
   const allChange = () => {
-    setTodos(savedTodos);
     setActive("All");
   };
 
   const activeChange = () => {
-    const activeTodos = savedTodos.filter((todo) => !todo.isDone);
-    setTodos(activeTodos);
     setActive("Active");
   };
 
   const completedChange = () => {
-    const completedTodos = savedTodos.filter((todo) => todo.isDone);
-    setTodos(completedTodos);
     setActive("Completed");
   };
+
+  const filteredData = todos.filter((el) => {
+    if (activeTab === "All") return true;
+    if (activeTab === "Active") return !el.isDone;
+    return el.isDone;
+  });
+
+  console.log(filteredData, "datas");
+
   return (
     <div className=" flex justify-center items-center flex-col pt-15 bg-white h-screen">
-      <div className="h-fit w-[377px] bg-white border-3 border-green-500">
+      <div className="h-fit w-[377px] bg-white border-3 border-black-500">
         <div className="flex justify-center mt-6 text-black font-semibold text-[20px]">
           To-Do List
         </div>
@@ -57,16 +57,16 @@ export default function Todo() {
             value={inputValue}
             onChange={handleOnchange}
             type="text"
-            className="border rounded-[6px] border-black w-[280px] text-[#71717A] pl-4"
+            className="border rounded-[6px] border-black w-[280px] text-[#000000] pl-4"
             placeholder="Add a new task..."
           />
 
           <Box
             isActive={true}
             onClick={handleOnClick}
-            className="border border-[#E4E4E7] text-[#71717A] bg-[#3C82F6]"
+            // className="border border-[#E4E4E7] text-[#71717A] bg-[#3C82F6]"
             title="Add"
-            backgroundColor="#3C82F6"
+            // backgroundColor="#3C82F6"
             text="Hello"
           />
         </div>
@@ -97,30 +97,39 @@ export default function Todo() {
           />
         </div>
         <div className="px-4 ">
-          {todos.map((todo, index) => (
-            <Task
-              todos={todos}
-              index={index}
-              setTodos={setTodos}
-              setSaved={setSaved}
-              key={todo.id}
-              taskText={todo.title}
-              isDone={todo.isDone}
-            ></Task>
-          ))}
-        </div>
-        <div className="flex justify-between px-[20px] mt-5">
-          <div className="text-[#6B7280] flex gap-1">
-            {todos.filter((todo) => todo.isDone).length} of {todos.length} tasks
-            completed
+          {filteredData.map((todo) => {
+            return (
+              <Task
+                key={todo.id}
+                todos={todos}
+                id={todo.id}
+                setTodos={setTodos}
+                taskText={todo.title}
+                isDone={todo.isDone}
+              />
+            );
+          })}
+
+          <div className="flex justify-between px-[20px] mt-5">
+            {todos.length === 0 ? (
+              <div>no tasks yet</div>
+            ) : (
+              <div>
+                {" "}
+                <div className="text-[#6B7280] flex gap-1">
+                  {filteredData.filter((todo) => todo.isDone).length} of{" "}
+                  {todos.length} tasks completed
+                </div>
+                <button className="text-[#EF4444]" onClick={deleteComplete}>
+                  Clear completed
+                </button>
+              </div>
+            )}
           </div>
-          <button className="text-[#EF4444]" onClick={deleteComplete}>
-            Clear completed
-          </button>
-        </div>
-        <div className="text-[12px] flex justify-center p-1 mt-10">
-          <p className="text-gray-400">Powered by</p>
-          <a className="text-blue-500">Pinecone academy</a>
+          <div className="text-[12px] flex justify-center p-1 mt-10">
+            <p className="text-gray-400">Powered by</p>
+            <a className="text-blue-500">Pinecone academy</a>
+          </div>
         </div>
       </div>
     </div>
