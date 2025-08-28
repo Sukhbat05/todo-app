@@ -112,10 +112,12 @@ export default function Todo() {
 
           <div className="flex justify-between px-[20px] mt-5">
             {todos.length === 0 ? (
-              <div>no tasks yet</div>
+              <div className="text-[#6B7280]  mx-10">
+                No tasks yet. Add one above!
+              </div>
             ) : (
-              <div>
-                {" "}
+              <div className="flex justify-between gap-5">
+                {""}
                 <div className="text-[#6B7280] flex gap-1">
                   {filteredData.filter((todo) => todo.isDone).length} of{" "}
                   {todos.length} tasks completed
@@ -126,7 +128,7 @@ export default function Todo() {
               </div>
             )}
           </div>
-          <div className="text-[12px] flex justify-center p-1 mt-10">
+          <div className="text-[12px] flex justify-center p-1 mb-5 mt-10">
             <p className="text-gray-400">Powered by</p>
             <a className="text-blue-500">Pinecone academy</a>
           </div>
